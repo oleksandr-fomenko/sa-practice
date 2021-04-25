@@ -28,12 +28,3 @@ substitutions:
   _WORK_DIR_NAME: data.handler
   _GKE_LOCATION: us-central1-a
   _GKE_CLUSTER: gke-cluster
-
-
-    #   - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
-    #  dir: 'data.handler'
-  #  entrypoint: 'bash'
-  #  args: ['-c', 'gcloud config set app/cloud_build_timeout 1600 && gcloud app deploy']
-#images:
-#  - 'gcr.io/$PROJECT_ID/data-handler'
-#timeout: 1600s
