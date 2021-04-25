@@ -1,9 +1,9 @@
 steps:
   - name: 'gcr.io/cloud-builders/mvn'
     args: ['package']
-    dir: '$_WORK_DIR_NAME'
+    dir: 'data-handler'
   - name: 'gcr.io/cloud-builders/docker'
-    dir: '$_WORK_DIR_NAME'
+    dir: 'data-handler'
     args: ['build', '--tag=gcr.io/$PROJECT_ID/$_IMAGE_NAME:$COMMIT_SHA', '-f', 'Dockerfile', '.']
   # push image to Google Cloud Registry
   - name: 'gcr.io/cloud-builders/docker'
@@ -29,7 +29,6 @@ options:
   substitution_option: 'ALLOW_LOOSE'
 substitutions:
   _IMAGE_NAME: data-handler
-  _WORK_DIR_NAME: data-handler
   _GKE_LOCATION: us-central1-a
   _GKE_CLUSTER: gke-cluster
 
