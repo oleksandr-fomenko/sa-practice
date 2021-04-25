@@ -12,19 +12,12 @@ steps:
       - 'gcr.io/$PROJECT_ID/$_IMAGE_NAME:$COMMIT_SHA'
   # deploy container image to GKE
   - name: 'gcr.io/cloud-builders/gke-deploy'
-    id: 'Prepare deploy'
     args:
-      - 'prepare'
+      - 'run'
       - '--image=gcr.io/$PROJECT_ID/$_IMAGE_NAME:$COMMIT_SHA'
-      - '--expose=8080'
-      - '--app=$_K8S_APP_NAME'
-      - '--annotation=gcb-build-id=$BUILD_ID'
-  - name: 'gcr.io/cloud-builders/gke-deploy'
-    id: 'Apply deploy'
-    args:
-      - 'apply'
       - '--cluster=$_GKE_CLUSTER'
       - '--location=$_GKE_LOCATION'
+      - '--expose=8080'
 timeout: 1200s
 options:
   substitution_option: 'ALLOW_LOOSE'
