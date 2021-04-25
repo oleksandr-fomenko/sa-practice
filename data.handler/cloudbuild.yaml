@@ -17,6 +17,7 @@ steps:
       - 'prepare'
       - '--image=$_IMAGE_NAME:$COMMIT_SHA'
       - '--expose=8080'
+      - '--app=$_K8S_APP_NAME'
       - '--annotation=gcb-build-id=$BUILD_ID'
   - name: 'gcr.io/cloud-builders/gke-deploy'
     id: 'Apply deploy'
@@ -28,6 +29,7 @@ timeout: 1200s
 options:
   substitution_option: 'ALLOW_LOOSE'
 substitutions:
+  _K8S_APP_NAME: data-handler
   _IMAGE_NAME: data-handler
   _WORK_DIR_NAME: data.handler
   _GKE_LOCATION: us-central1-a
