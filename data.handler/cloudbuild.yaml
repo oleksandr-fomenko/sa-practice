@@ -1,26 +1,37 @@
 steps:
   - name: 'gcr.io/cloud-builders/mvn'
     args: ['package']
-    dir: 'data.handler'
+    dir: '$_WORK_DIR_NAME'
   - name: 'gcr.io/cloud-builders/docker'
-    dir: 'data.handler'
-    args: ['build', '--tag=gcr.io/$PROJECT_ID/data-handler:$COMMIT_SHA', '-f', 'Dockerfile', '.']
+    dir: '$_WORK_DIR_NAME'
+    args: ['build', '--tag=gcr.io/$PROJECT_ID/$_IMAGE_NAME:$COMMIT_SHA', '-f', 'Dockerfile', '.']
   # push image to Google Cloud Registry
   - name: 'gcr.io/cloud-builders/docker'
     args:
-      - push
-      - gcr.io/$PROJECT_ID/data-handler:$COMMIT_SHA
+      - 'push'
+      - 'gcr.io/$PROJECT_ID/$_IMAGE_NAME:$COMMIT_SHA'
   # deploy container image to GKE
   - name: 'gcr.io/cloud-builders/gke-deploy'
+    id: 'Prepare deploy'
     args:
-      - run
-      - --image=gcr.io/$PROJECT_ID/data-handler:$COMMIT_SHA
-      - --location=$_CUSTOM_REGION
-      - --cluster=$_CUSTOM_CLUSTER
+      - 'prepare'
+      - '--image=$_IMAGE_NAME:$COMMIT_SHA'
+      - '--expose=8080'
+      - '--annotation=gcb-build-id=$BUILD_ID'
+  - name: 'gcr.io/cloud-builders/gke-deploy'
+    id: 'Apply deploy'
+    args:
+      - 'apply'
+      - '--cluster=$_GKE_CLUSTER'
+      - '--location=$_GKE_LOCATION'
 timeout: 1200s
+options:
+  substitution_option: 'ALLOW_LOOSE'
 substitutions:
-  _CUSTOM_REGION: us-central1-a
-  _CUSTOM_CLUSTER: gke-cluster
+  _IMAGE_NAME: data-handler
+  _WORK_DIR_NAME: data-handler
+  _GKE_LOCATION: us-central1-a
+  _GKE_CLUSTER: gke-cluster
 
 
     #   - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
